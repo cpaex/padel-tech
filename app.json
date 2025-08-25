@@ -1,0 +1,47 @@
+{
+  "expo": {
+    "name": "PadelTech",
+    "slug": "padeltech",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#667eea"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSCameraUsageDescription": "Esta aplicación necesita acceso a la cámara para grabar videos de tus golpes de pádel y analizar tu técnica.",
+        "NSMicrophoneUsageDescription": "Esta aplicación necesita acceso al micrófono para grabar audio durante la grabación de videos."
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#667eea"
+      },
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO",
+        "android.permission.WRITE_EXTERNAL_STORAGE"
+      ]
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Esta aplicación necesita acceso a la cámara para grabar videos de tus golpes de pádel y analizar tu técnica."
+        }
+      ]
+    ]
+  }
+}

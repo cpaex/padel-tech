@@ -1,0 +1,16 @@
+{
+  "ignore_dirs": [
+    ".git",
+    "node_modules",
+    ".expo",
+    "dist",
+    "build",
+    "coverage",
+    ".nyc_output",
+    "tmp",
+    "temp"
+  ],
+  "fsevents_latency": 0.05,
+  "fsevents_try_resync": true,
+  "defer_recrawl": true
+}
