@@ -75,6 +75,18 @@ export default function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
     }
   };
 
+  const handleGuestLogin = async () => {
+    try {
+      setLoading(true);
+      await authService.loginAsGuest();
+      onLoginSuccess();
+    } catch (error: any) {
+      Alert.alert('Error', 'Error al iniciar como invitado');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <LinearGradient
       colors={['#667eea', '#764ba2', '#f093fb']}
@@ -174,6 +186,32 @@ export default function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
             )}
           </TouchableOpacity>
 
+          {/* Botón de invitado más prominente */}
+          <TouchableOpacity 
+            style={styles.guestButton} 
+            onPress={handleGuestLogin}
+          >
+            <View style={styles.guestContent}>
+              <View style={styles.guestIcon}>
+                <Ionicons name="person-outline" size={24} color="#667eea" />
+              </View>
+              <View style={styles.guestTextContainer}>
+                <Text style={styles.guestButtonText}>
+                  Probar como invitado
+                </Text>
+                <Text style={styles.guestSubtext}>
+                  Sin registro • Acceso inmediato
+                </Text>
+              </View>
+            </View>
+          </TouchableOpacity>
+
+          <View style={styles.divider}>
+            <View style={styles.dividerLine} />
+            <Text style={styles.dividerText}>o</Text>
+            <View style={styles.dividerLine} />
+          </View>
+
           <TouchableOpacity 
             style={styles.switchButton}
             onPress={() => {
@@ -191,14 +229,6 @@ export default function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
               }
             </Text>
           </TouchableOpacity>
-
-          {isLogin && (
-            <TouchableOpacity style={styles.guestButton} onPress={onLoginSuccess}>
-              <Text style={styles.guestButtonText}>
-                Continuar como invitado
-              </Text>
-            </TouchableOpacity>
-          )}
         </View>
       </KeyboardAvoidingView>
     </LinearGradient>
@@ -287,14 +317,58 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   guestButton: {
+    backgroundColor: 'white',
+    borderRadius: 15,
+    paddingVertical: 18,
+    paddingHorizontal: 20,
     alignItems: 'center',
-    paddingVertical: 10,
-    marginTop: 10,
-    borderTopWidth: 1,
-    borderTopColor: 'rgba(255, 255, 255, 0.3)',
+    marginTop: 15,
+    marginBottom: 15,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  guestContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  guestIcon: {
+    marginRight: 15,
+  },
+  guestTextContainer: {
+    flex: 1,
+    alignItems: 'center',
   },
   guestButtonText: {
+    color: '#667eea',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  guestSubtext: {
+    color: '#667eea',
+    fontSize: 12,
+    opacity: 0.7,
+    marginTop: 2,
+  },
+  divider: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 10,
+  },
+  dividerLine: {
+    flex: 1,
+    height: 1,
+    backgroundColor: 'rgba(255, 255, 255, 0.3)',
+  },
+  dividerText: {
     color: 'rgba(255, 255, 255, 0.8)',
+    marginHorizontal: 15,
     fontSize: 14,
   },
 });

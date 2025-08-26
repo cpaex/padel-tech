@@ -33,6 +33,7 @@ export default function App() {
 
   const checkAuthStatus = async () => {
     try {
+      // Primero intentar obtener usuario actual (maneja tanto normales como invitados)
       const user = await authService.getCurrentUser();
       setIsAuthenticated(!!user);
     } catch (error) {

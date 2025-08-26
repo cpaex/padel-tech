@@ -132,16 +132,41 @@ export class AuthService {
     }
 
     try {
-      const response = await apiClient.get<{ user: User }>(API_CONFIG.AUTH.ME);
+      // Check if this is a guest user first - avoid API calls for guests
+      const isGuest = await this.isGuestUser();
+      const userData = await AsyncStorage.getItem(AUTH_CONFIG.STORAGE_KEYS.USER_DATA);
       
-      if (response.success && response.data) {
-        this.currentUser = response.data.user;
+      if (isGuest && userData) {
+        // Return guest user data without any API call
+        this.currentUser = JSON.parse(userData);
         return this.currentUser;
       }
+
+      // Only make API call for non-guest users
+      if (!isGuest) {
+        const response = await apiClient.get<{ user: User }>(API_CONFIG.AUTH.ME);
+        
+        if (response.success && response.data) {
+          this.currentUser = response.data.user;
+          return this.currentUser;
+        }
+      }
     } catch (error) {
-      console.error('Get current user error:', error);
-      // If getting user fails, might need to re-authenticate
-      await this.clearAuthData();
+      // Double-check if it's a guest user before logging error
+      const isGuest = await this.isGuestUser();
+      const userData = await AsyncStorage.getItem(AUTH_CONFIG.STORAGE_KEYS.USER_DATA);
+      
+      if (isGuest && userData) {
+        // Return guest user even if somehow we got here
+        this.currentUser = JSON.parse(userData);
+        return this.currentUser;
+      }
+      
+      // Only log error for non-guest users
+      if (!isGuest) {
+        console.error('Get current user error:', error);
+        await this.clearAuthData();
+      }
     }
 
     return null;
@@ -219,8 +244,10 @@ export class AuthService {
         AUTH_CONFIG.STORAGE_KEYS.ACCESS_TOKEN,
         AUTH_CONFIG.STORAGE_KEYS.REFRESH_TOKEN,
         AUTH_CONFIG.STORAGE_KEYS.USER_DATA,
-        AUTH_CONFIG.STORAGE_KEYS.LAST_LOGIN
+        AUTH_CONFIG.STORAGE_KEYS.LAST_LOGIN,
+        'IS_GUEST_USER'
       ]);
+      this.currentUser = null;
     } catch (error) {
       console.error('Error clearing auth data:', error);
     }
@@ -271,6 +298,46 @@ export class AuthService {
 
   getCurrentUserSync(): User | null {
     return this.currentUser;
+  }
+
+  async loginAsGuest(): Promise<User> {
+    // Crear un usuario invitado temporal
+    const guestUser: User = {
+      _id: 'guest-' + Date.now(),
+      name: 'Usuario Invitado',
+      email: 'guest@padeltech.com',
+      profile: {
+        level: 'beginner',
+        favoriteShot: 'derecha',
+        experience: 0,
+        totalAnalyses: 0,
+        averageScore: 0,
+      },
+      createdAt: new Date().toISOString(),
+      isActive: true,
+    };
+
+    this.currentUser = guestUser;
+    
+    // Guardar en AsyncStorage como invitado
+    await AsyncStorage.setItem(AUTH_CONFIG.STORAGE_KEYS.USER_DATA, JSON.stringify(guestUser));
+    await AsyncStorage.setItem('IS_GUEST_USER', 'true');
+
+    return guestUser;
+  }
+
+  async isGuestUser(): Promise<boolean> {
+    try {
+      const isGuest = await AsyncStorage.getItem('IS_GUEST_USER');
+      return isGuest === 'true';
+    } catch (error) {
+      return false;
+    }
+  }
+
+  async clearAllData(): Promise<void> {
+    await this.clearAuthData();
+    console.log('All user data cleared');
   }
 }
 

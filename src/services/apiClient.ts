@@ -25,6 +25,18 @@ export class ApiClient {
     this.defaultHeaders = API_CONFIG.DEFAULT_HEADERS;
   }
 
+  private createTimeoutSignal(timeout: number): AbortSignal {
+    // Compatibility wrapper for AbortSignal.timeout
+    if (typeof AbortSignal.timeout === 'function') {
+      return AbortSignal.timeout(timeout);
+    } else {
+      // Fallback for environments that don't support AbortSignal.timeout
+      const controller = new AbortController();
+      setTimeout(() => controller.abort(), timeout);
+      return controller.signal;
+    }
+  }
+
   private async getAuthToken(): Promise<string | null> {
     try {
       return await AsyncStorage.getItem(AUTH_CONFIG.STORAGE_KEYS.ACCESS_TOKEN);
@@ -124,7 +136,7 @@ export class ApiClient {
       () => fetch(url.toString(), {
         method: 'GET',
         headers: { ...headers, ...options?.headers },
-        signal: AbortSignal.timeout(API_CONFIG.REQUEST_CONFIG.TIMEOUT),
+        signal: this.createTimeoutSignal(API_CONFIG.REQUEST_CONFIG.TIMEOUT),
         ...options
       })
     );
@@ -154,7 +166,7 @@ export class ApiClient {
         method: 'POST',
         headers: requestHeaders,
         body,
-        signal: AbortSignal.timeout(API_CONFIG.REQUEST_CONFIG.TIMEOUT),
+        signal: this.createTimeoutSignal(API_CONFIG.REQUEST_CONFIG.TIMEOUT),
         ...options
       })
     );
@@ -173,7 +185,7 @@ export class ApiClient {
         method: 'PUT',
         headers: { ...headers, ...options?.headers },
         body: JSON.stringify(data),
-        signal: AbortSignal.timeout(API_CONFIG.REQUEST_CONFIG.TIMEOUT),
+        signal: this.createTimeoutSignal(API_CONFIG.REQUEST_CONFIG.TIMEOUT),
         ...options
       })
     );
@@ -190,7 +202,7 @@ export class ApiClient {
       () => fetch(url, {
         method: 'DELETE',
         headers: { ...headers, ...options?.headers },
-        signal: AbortSignal.timeout(API_CONFIG.REQUEST_CONFIG.TIMEOUT),
+        signal: this.createTimeoutSignal(API_CONFIG.REQUEST_CONFIG.TIMEOUT),
         ...options
       })
     );
@@ -285,7 +297,7 @@ export class ApiClient {
     try {
       const response = await fetch(`${this.baseUrl.replace('/api', '')}/health`, {
         method: 'GET',
-        signal: AbortSignal.timeout(5000)
+        signal: this.createTimeoutSignal(5000)
       });
       return response.ok;
     } catch (error) {
