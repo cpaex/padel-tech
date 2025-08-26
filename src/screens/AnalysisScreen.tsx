@@ -20,11 +20,12 @@ const { width, height } = Dimensions.get('window');
 
 const analysisSteps = [
   'Inicializando modelo de IA...',
-  'Procesando frames del video...',
-  'Analizando postura y movimiento...',
-  'Evaluando técnica del golpe...',
-  'Generando recomendaciones...',
-  'Completando análisis...',
+  'Extrayendo frames del video...',
+  'Analizando postura corporal...',
+  'Evaluando mecánica del golpe...',
+  'Calculando métricas de rendimiento...',
+  'Generando recomendaciones personalizadas...',
+  'Finalizando análisis...',
 ];
 
 export default function AnalysisScreen() {
@@ -40,7 +41,17 @@ export default function AnalysisScreen() {
   const rotateAnim = new Animated.Value(0);
 
   useEffect(() => {
-    // Simulate ML model processing
+    // TODO: Reemplazar simulación con llamada real al modelo de deep learning
+    // TODO: Implementar las siguientes funciones:
+    // TODO: 1. processVideoWithML(videoUri, shotType) - función principal para análisis
+    // TODO: 2. initializeMLModel() - cargar el modelo de TensorFlow.js o similar
+    // TODO: 3. extractFrames(videoUri) - extraer frames del video para análisis
+    // TODO: 4. analyzePosture(frames) - analizar postura en cada frame
+    // TODO: 5. evaluateTechnique(postureData) - evaluar técnica basada en postura
+    // TODO: 6. generateRecommendations(techniqueData) - generar recomendaciones
+    // TODO: La función debería retornar: { overallScore, posture, timing, followThrough, power, improvements }
+    
+    // CURRENT: Simulate ML model processing - REMOVE when ML model is ready
     const stepInterval = setInterval(() => {
       setCurrentStep((prev) => {
         if (prev < analysisSteps.length - 1) {
@@ -52,7 +63,7 @@ export default function AnalysisScreen() {
       });
     }, 1500);
 
-    // Simulate progress
+    // CURRENT: Simulate progress - REPLACE with real ML progress updates
     const progressInterval = setInterval(() => {
       setProgress((prev) => {
         if (prev < 100) {
@@ -99,7 +110,9 @@ export default function AnalysisScreen() {
 
   useEffect(() => {
     if (isComplete) {
-      // Simulate analysis result
+      // TODO: REPLACE this mock result with real ML analysis results
+      // TODO: The processVideoWithML function should return this exact structure:
+      // TODO: { overallScore, posture, timing, followThrough, power, improvements, shotType }
       const mockResult = {
         overallScore: Math.floor(Math.random() * 30) + 70, // 70-100
         posture: Math.floor(Math.random() * 30) + 70,
@@ -178,6 +191,9 @@ export default function AnalysisScreen() {
             />
           </View>
           <Text style={styles.progressText}>{Math.round(progress)}%</Text>
+          <Text style={styles.progressSubtext}>
+            {progress < 100 ? 'Procesando tu video...' : '¡Análisis completado!'}
+          </Text>
         </View>
 
         <View style={styles.stepsContainer}>
@@ -215,9 +231,14 @@ export default function AnalysisScreen() {
       <View style={styles.footer}>
         <Text style={styles.footerText}>
           {isComplete
-            ? 'Análisis completado. Redirigiendo...'
-            : 'Por favor espera mientras analizamos tu técnica'}
+            ? '¡Análisis completado! Preparando tus resultados...'
+            : 'Nuestro modelo de IA está analizando cada detalle de tu técnica'}
         </Text>
+        {!isComplete && (
+          <Text style={styles.footerSubtext}>
+            Tiempo estimado: {Math.max(1, Math.ceil((100 - progress) / 10))} segundos
+          </Text>
+        )}
       </View>
     </LinearGradient>
   );
@@ -292,6 +313,12 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: 'white',
   },
+  progressSubtext: {
+    fontSize: 14,
+    color: 'rgba(255, 255, 255, 0.8)',
+    marginTop: 8,
+    textAlign: 'center',
+  },
   stepsContainer: {
     width: '100%',
     alignItems: 'center',
@@ -345,5 +372,12 @@ const styles = StyleSheet.create({
     color: 'rgba(255, 255, 255, 0.8)',
     textAlign: 'center',
     paddingHorizontal: 20,
+  },
+  footerSubtext: {
+    fontSize: 12,
+    color: 'rgba(255, 255, 255, 0.6)',
+    textAlign: 'center',
+    marginTop: 8,
+    fontStyle: 'italic',
   },
 });

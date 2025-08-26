@@ -18,7 +18,8 @@
       "supportsTablet": true,
       "infoPlist": {
         "NSCameraUsageDescription": "Esta aplicación necesita acceso a la cámara para grabar videos de tus golpes de pádel y analizar tu técnica.",
-        "NSMicrophoneUsageDescription": "Esta aplicación necesita acceso al micrófono para grabar audio durante la grabación de videos."
+        "NSPhotoLibraryUsageDescription": "Esta aplicación necesita acceso a tu galería de fotos para guardar los videos de análisis.",
+        "NSPhotoLibraryAddUsageDescription": "Esta aplicación necesita permisos para guardar tus videos de análisis en la galería de fotos."
       },
       "bundleIdentifier": "com.cpaez.padeltech.v2"
     },
@@ -30,8 +31,8 @@
       },
       "permissions": [
         "android.permission.CAMERA",
-        "android.permission.RECORD_AUDIO",
-        "android.permission.WRITE_EXTERNAL_STORAGE"
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+        "android.permission.READ_EXTERNAL_STORAGE"
       ]
     },
     "web": {

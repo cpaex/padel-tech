@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import { Camera, CameraType } from 'expo-camera';
 import { Video } from 'expo-av';
+// import * as MediaLibrary from 'expo-media-library'; // Removed due to iOS compatibility issues
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -42,15 +43,22 @@ export default function CameraScreen() {
 
   useEffect(() => {
     if (isWeb) {
-      // Simulate camera permission for web
+      // Simulate permissions for web
       setHasPermission(true);
       setCameraReady(true);
       return;
     }
 
     (async () => {
-      const { status } = await Camera.requestCameraPermissionsAsync();
-      setHasPermission(status === 'granted');
+      try {
+        console.log('Requesting camera permissions...');
+        const { status: cameraStatus } = await Camera.requestCameraPermissionsAsync();
+        console.log('Camera permission status:', cameraStatus);
+        setHasPermission(cameraStatus === 'granted');
+      } catch (cameraError) {
+        console.error('Camera permission error:', cameraError);
+        setHasPermission(false);
+      }
     })();
   }, [isWeb]);
 
@@ -78,6 +86,10 @@ export default function CameraScreen() {
     };
   }, [isRecording]);
 
+  // MediaLibrary functionality temporarily removed for stability
+  // Videos will be recorded and processed but not saved to photo library
+  // This can be re-enabled once MediaLibrary compatibility issues are resolved
+
   const startRecording = async () => {
     if (isWeb) {
       // Simulate recording for web
@@ -87,9 +99,9 @@ export default function CameraScreen() {
       setTimeout(() => {
         setIsRecording(false);
         setRecordedVideo('web-simulation');
-        // Auto-redirect to results after recording
+        // Navigate to Analysis screen for web simulation
         setTimeout(() => {
-          processVideoAndRedirect('web-simulation');
+          navigation.navigate('Analysis', { videoUri: 'web-simulation', shotType });
         }, 500);
       }, 3000);
       return;
@@ -103,15 +115,20 @@ export default function CameraScreen() {
       
       const video = await cameraRef.current.recordAsync({
         maxDuration: 10,
-        quality: Camera.Constants.VideoQuality['720p'],
+        quality: Camera.Constants.VideoQuality['720p' as any],
+        mute: true,
       });
       
       setRecordedVideo(video.uri);
       setIsRecording(false);
       
-      // Auto-redirect to results after recording
+      console.log('Video recorded successfully:', video.uri);
+      console.log('Note: Video saved to app cache, not photo library (MediaLibrary disabled)');
+      
+      // Navigate to Analysis screen instead of direct results
       setTimeout(() => {
-        processVideoAndRedirect(video.uri);
+        console.log('Navigating to Analysis screen...');
+        navigation.navigate('Analysis', { videoUri: video.uri, shotType });
       }, 500);
     } catch (error) {
       console.error('Error recording video:', error);
@@ -132,86 +149,7 @@ export default function CameraScreen() {
     }
   };
 
-  const processVideoAndRedirect = async (videoUri: string) => {
-    setIsProcessing(true);
-    
-    try {
-      // Simulate quick processing (in real app, this would be your ML model)
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Generate analysis result
-      const analysisResult = {
-        overallScore: Math.floor(Math.random() * 30) + 70, // 70-100
-        posture: Math.floor(Math.random() * 30) + 70,
-        timing: Math.floor(Math.random() * 30) + 70,
-        followThrough: Math.floor(Math.random() * 30) + 70,
-        power: Math.floor(Math.random() * 30) + 70,
-        improvements: getMockImprovements(shotType),
-        shotType: shotType,
-      };
 
-      // Navigate directly to results
-      navigation.replace('Results', { analysisResult });
-    } catch (error) {
-      console.error('Error processing video:', error);
-      Alert.alert('Error', 'No se pudo procesar el video');
-      setIsProcessing(false);
-    }
-  };
-
-  const getMockImprovements = (type: string): string[] => {
-    const improvements: { [key: string]: string[] } = {
-      derecha: [
-        'Mantén la raqueta más alta en la preparación',
-        'Mejora la transferencia de peso hacia adelante',
-        'Ajusta el timing del impacto con la pelota',
-        'Practica el seguimiento completo del golpe',
-      ],
-      reves: [
-        'Gira más los hombros en la preparación',
-        'Mantén la raqueta paralela al suelo',
-        'Mejora la coordinación mano-ojo',
-        'Practica la posición de los pies',
-      ],
-      volea: [
-        'Mantén la raqueta más cerca del cuerpo',
-        'Reduce el backswing para mayor control',
-        'Mejora la posición de espera',
-        'Practica la reacción rápida',
-      ],
-      saque: [
-        'Eleva más la pelota en el lanzamiento',
-        'Mejora la coordinación del movimiento',
-        'Practica la consistencia del servicio',
-        'Ajusta la posición de los pies',
-      ],
-      bandeja: [
-        'Mantén la raqueta más alta',
-        'Mejora el ángulo de la raqueta',
-        'Practica la precisión del golpe',
-        'Ajusta la fuerza según la situación',
-      ],
-      vibora: [
-        'Mejora la posición de la muñeca',
-        'Practica el control de la dirección',
-        'Ajusta la velocidad del swing',
-        'Mantén la concentración en el objetivo',
-      ],
-      remate: [
-        'Mejora la posición de salto',
-        'Practica el timing del impacto',
-        'Ajusta la fuerza según la situación',
-        'Mantén el equilibrio durante el golpe',
-      ],
-    };
-
-    return improvements[type] || [
-      'Practica la técnica básica',
-      'Mejora la consistencia',
-      'Trabaja en la precisión',
-      'Desarrolla la confianza',
-    ];
-  };
 
   const retakeVideo = () => {
     setRecordedVideo(null);
@@ -233,15 +171,17 @@ export default function CameraScreen() {
   };
 
   if (hasPermission === null) {
+    console.log('Waiting for camera permissions...');
     return (
       <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color="#667eea" />
-        <Text style={styles.loadingText}>Solicitando permisos...</Text>
+        <Text style={styles.loadingText}>Solicitando permisos de cámara...</Text>
       </View>
     );
   }
 
   if (hasPermission === false) {
+    console.log('Camera permission denied');
     return (
       <View style={styles.errorContainer}>
         <Text style={styles.errorText}>No hay acceso a la cámara</Text>
@@ -386,7 +326,7 @@ export default function CameraScreen() {
               source={{ uri: recordedVideo }}
               style={styles.videoPreview}
               useNativeControls
-              resizeMode="contain" as any
+              resizeMode={'contain' as any}
             />
           )}
           
@@ -621,5 +561,23 @@ const styles = StyleSheet.create({
   backButtonText: {
     color: 'white',
     fontSize: 16,
+  },
+  errorSubtext: {
+    fontSize: 14,
+    color: '#999',
+    textAlign: 'center',
+    marginTop: 10,
+    marginBottom: 20,
+  },
+  continueButton: {
+    backgroundColor: '#667eea',
+    paddingHorizontal: 30,
+    paddingVertical: 12,
+    borderRadius: 25,
+  },
+  continueButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: '600',
   },
 });
