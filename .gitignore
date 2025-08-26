@@ -1,67 +1,9 @@
-# OSX
-#
-.DS_Store
-
-# Xcode
-#
-build/
-*.pbxuser
-!default.pbxuser
-*.mode1v3
-!default.mode1v3
-*.mode2v3
-!default.mode2v3
-*.perspectivev3
-!default.perspectivev3
-xcuserdata
-*.xccheckout
-*.moved-aside
-DerivedData
-*.hmap
-*.ipa
-*.xcuserstate
-project.xcworkspace
-
-# Android/IntelliJ
-#
-build/
-.idea
-.gradle
-local.properties
-*.iml
-*.hprof
-.cxx/
-*.keystore
-!debug.keystore
-
-# node.js
-#
+# Dependencies
 node_modules/
-npm-debug.log
-yarn-error.log
-
-# BUCK
-buck-out/
-\.buckd/
-*.keystore
-!debug.keystore
-
-# fastlane
-#
-# It is recommended to not store the screenshots in the git repo. Instead, use fastlane to re-generate the
-# screenshots whenever they are needed.
-# For more information about the recommended setup visit:
-# https://docs.fastlane.tools/best-practices/source-control/
-
-*/fastlane/report.xml
-*/fastlane/Preview.html
-*/fastlane/screenshots
-
-# Bundle artifacts
-*.jsbundle
-
-# CocoaPods
-/ios/Pods/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
 
 # Expo
 .expo/
@@ -89,18 +31,29 @@ yarn-error.*
 *.pem
 
 # local env files
-.env*.local
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env.backup
+.env.memory
+.env.temp
 
-# typescript
-*.tsbuildinfo
-
-# Temporary files
-*.tmp
-*.temp
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
 
 # Logs
-logs
+logs/
 *.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
 
 # Runtime data
 pids
@@ -110,11 +63,13 @@ pids
 
 # Coverage directory used by tools like istanbul
 coverage/
+*.lcov
 
 # nyc test coverage
 .nyc_output
 
 # Dependency directories
+node_modules/
 jspm_packages/
 
 # Optional npm cache directory
@@ -141,7 +96,6 @@ jspm_packages/
 # dotenv environment variables file
 .env
 .env.test
-.env.production
 
 # parcel-bundler cache (https://parceljs.org/)
 .cache
@@ -165,3 +119,130 @@ public
 # Temporary folders
 tmp/
 temp/
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Backend specific
+backend/logs/
+backend/uploads/
+backend/temp/
+backend/*.db
+backend/data/
+
+# Frontend specific
+padel-tech/.expo/
+padel-tech/dist/
+padel-tech/web-build/
+padel-tech/assets/*.png
+padel-tech/assets/*.jpg
+padel-tech/assets/*.jpeg
+padel-tech/assets/*.gif
+padel-tech/assets/*.svg
+
+# Test coverage
+coverage/
+.nyc_output/
+
+# Build outputs
+build/
+dist/
+out/
+
+# Environment files
+.env*
+!.env.example
+
+# Database files
+*.sqlite
+*.db
+*.sql
+
+# Upload directories
+uploads/
+media/
+public/uploads/
+
+# Cache directories
+.cache/
+.temp/
+.tmp/
+
+# Backup files
+*.backup
+*.bak
+*.old
+
+# Lock files (optional - some teams include these)
+# package-lock.json
+# yarn.lock
+
+# Local development files
+local/
+dev/
+development/
+
+# Production files that shouldn't be in repo
+production/
+staging/
+
+# SSL certificates
+*.pem
+*.key
+*.crt
+*.csr
+*.p12
+*.pfx
+
+# API keys and secrets
+secrets/
+keys/
+config/secrets.json
+
+# Mobile app specific
+*.ipa
+*.apk
+*.aab
+*.dSYM.zip
+*.dSYM
+
+# Expo specific
+.expo/
+.expo-shared/
+web-build/
+
+# React Native specific
+android/app/build/
+ios/build/
+ios/Pods/
+ios/Podfile.lock
+
+# Testing
+coverage/
+.nyc_output/
+test-results/
+junit.xml
+
+# Performance monitoring
+.nyc_output/
+coverage/
+
+# Misc
+*.tgz
+*.tar.gz
