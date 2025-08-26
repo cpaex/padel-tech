@@ -359,7 +359,7 @@ export default function ProfileScreen() {
             style={styles.actionButton}
             onPress={() => {/* Implementar importación */}}
           >
-            <Ionicons name="upload" size={20} color="#667eea" />
+            <Ionicons name="cloud-upload-outline" size={20} color="#667eea" />
             <Text style={styles.actionButtonText}>Importar Datos</Text>
           </TouchableOpacity>
           
