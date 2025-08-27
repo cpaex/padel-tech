@@ -19,7 +19,8 @@
 - (NSURL *)sourceURLForBridge:(RCTBridge *)bridge
 {
 #if DEBUG
-  return [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@".expo/.virtual-metro-entry"];
+  // Use Metro bundler endpoint for JavaScript bundle
+  return [NSURL URLWithString:@"http://192.168.0.14:8081/index.bundle?platform=ios&dev=false&minify=true"];
 #else
   return [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];
 #endif

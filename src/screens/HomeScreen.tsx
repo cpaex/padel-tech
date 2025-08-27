@@ -38,6 +38,10 @@ export default function HomeScreen() {
     navigation.navigate('Profile');
   };
 
+  const handleVideoHistoryPress = () => {
+    navigation.navigate('VideoHistory');
+  };
+
   return (
     <LinearGradient
       colors={['#667eea', '#764ba2', '#f093fb']}
@@ -46,12 +50,20 @@ export default function HomeScreen() {
       <View style={styles.header}>
         <Text style={styles.title}>PadelTech</Text>
         <Text style={styles.subtitle}>Analiza tu técnica de pádel</Text>
-        <TouchableOpacity
-          style={styles.profileButton}
-          onPress={handleProfilePress}
-        >
-          <Ionicons name="person-circle" size={28} color="white" />
-        </TouchableOpacity>
+        <View style={styles.headerButtons}>
+          <TouchableOpacity
+            style={styles.headerButton}
+            onPress={handleVideoHistoryPress}
+          >
+            <Ionicons name="videocam" size={24} color="white" />
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.headerButton}
+            onPress={handleProfilePress}
+          >
+            <Ionicons name="person-circle" size={24} color="white" />
+          </TouchableOpacity>
+        </View>
       </View>
 
       <ScrollView
@@ -109,10 +121,14 @@ const styles = StyleSheet.create({
     marginTop: 8,
     fontWeight: '500',
   },
-  profileButton: {
+  headerButtons: {
+    flexDirection: 'row',
     position: 'absolute',
     top: 60,
     right: 20,
+    gap: 12,
+  },
+  headerButton: {
     width: 40,
     height: 40,
     borderRadius: 20,
